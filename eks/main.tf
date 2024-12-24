@@ -1,17 +1,5 @@
 # EKS Module
 
-# Variables
-variable "cluster_name" {}
-variable "node_group_name" {}
-variable "node_instance_type" {}
-variable "desired_capacity" {}
-variable "min_size" {}
-variable "max_size" {}
-variable "vpc_id" {}
-variable "subnet_ids" {}
-variable "security_group_ids" {}
-variable "private_subnet_cidrs" {}
-variable "public_subnet_cidrs" {}
 
 
 # Outputs
@@ -261,25 +249,25 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
 resource "aws_eks_addon" "cni" {
   cluster_name                = var.cluster_name
   addon_name                  = "vpc-cni"
-  depends_on = [aws_eks_cluster.eks]
+  depends_on = [aws_eks_cluster.eks_cluster]
 }
 
 resource "aws_eks_addon" "kube-proxy" {
   cluster_name                = var.cluster_name
   addon_name                  = "kube-proxy"
-  depends_on = [aws_eks_cluster.eks]
+  depends_on = [aws_eks_cluster.eks_cluster]
 }
 resource "aws_eks_addon" "coredns" {
   cluster_name                = var.cluster_name
   addon_name                  = "coredns"
-  depends_on = [aws_eks_cluster.eks, aws_eks_node_group.public]
+  depends_on = [aws_eks_cluster.eks_cluster, aws_eks_node_group.eks_nodes]
   
 }
 
 resource "aws_eks_addon" "ebs" {
   cluster_name = var.cluster_name
   addon_name = "aws-ebs-csi-driver"
-  depends_on = [ aws_eks_cluster.eks ]
+  depends_on = [ aws_eks_cluster.eks_cluster ]
 }
 
 resource "aws_security_group" "eks_nodes" {
@@ -296,41 +284,8 @@ resource "aws_security_group" "eks_nodes" {
 
   tags = {
     Name                                        = "${var.cluster_name}-eks-node-sg"
-    "kubernetes.io/cluster/${var.eks_cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.cluster_name }" = "owned"
   }
 }
 
-resource "aws_security_group" "eks_cluster" {
-  name        = "${var.cluster_name}-eks-cluster-sg"
-  description = "Cluster communication with worker nodes"
-  vpc_id      = var.vpc_id
-  ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = flatten([var.private_subnet_cidrs,  var.public_subnet_cidrs])
-  }
-  tags = {
-    Name = "${var.cluster_name}-eks-cluster-sg"
-  }
-}
 
-resource "aws_security_group_rule" "cluster_inbound" {
-  description              = "Allow worker nodes to communicate with the cluster API Server"
-  from_port                = 443
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.eks_cluster.id
-  source_security_group_id = aws_security_group.eks_nodes.id
-  to_port                  = 443
-  type                     = "ingress"
-}
-
-resource "aws_security_group_rule" "cluster_outbound" {
-  description              = "Allow cluster API Server to communicate with the worker nodes"
-  from_port                = 1024
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.eks_cluster.id
-  source_security_group_id = aws_security_group.eks_nodes.id
-  to_port                  = 65535
-  type                     = "egress"
-}

@@ -16,7 +16,7 @@ module "security_group" {
 }
 
 module "s3_backend" {
-  source = "./s3_backend" # Path to your module folder
+  source = "./s3" # Path to your module folder
   name   = "my-environment"
 }
 
@@ -51,13 +51,8 @@ module "eks" {
 module "db_module" {
   source              = "./db-mod"
   name                = "my-app-db"
+  vpc_id = module.networking.dev_proj_1_vpc_id
   private_subnet_cidrs = tolist(module.networking.private_subnet_cidrs_block)
   public_subnet_cidrs = tolist(module.networking.public_subnet_cidr_block)
 }
 
-module "hosted_zone" {
-  source          = "./hosted-zone"
-  domain_name     = var.domain_name
-  aws_lb_dns_name = module.alb.aws_lb_dns_name
-  aws_lb_zone_id  = module.alb.aws_lb_zone_id
-}

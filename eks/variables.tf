@@ -1,11 +1,12 @@
-variable "cluster_name" {
-  type        = string
-  description = "Tag name"
-  default = "Smartbi-cluster"
-}
-
-variable "node_group_name" {
-  type = string
-  default = "node_group_name"
-  description = "node group name"
-}
+# Variables
+variable "cluster_name" {}
+variable "node_group_name" {}
+variable "node_instance_type" {}
+variable "desired_capacity" {}
+variable "min_size" {}
+variable "max_size" {}
+variable "vpc_id" {}
+variable "subnet_ids" {}
+variable "security_group_ids" {}
+variable "private_subnet_cidrs" {}
+variable "public_subnet_cidrs" {}
