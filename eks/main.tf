@@ -33,19 +33,22 @@ resource "aws_eks_cluster" "eks_cluster" {
 
 # EKS Cluster IAM Role
 resource "aws_iam_role" "eks_role" {
-  name = "${var.cluster_name}-role"
+  name = "${var.cluster_name}-eks-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
-        Principal = { Service = "eks.amazonaws.com" }
-      },
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
     ]
   })
 }
+
 
 # IAM Role for EKS Node Group
 resource "aws_iam_role" "eks_node_group_role" {
@@ -63,6 +66,25 @@ resource "aws_iam_role" "eks_node_group_role" {
       }
     ]
   })
+}
+
+resource "aws_iam_role" "eks_nodes" {
+  name                 = "${var.cluster_name}-worker"
+
+  assume_role_policy = data.aws_iam_policy_document.assume_workers.json
+}
+
+data "aws_iam_policy_document" "assume_workers" {
+  statement {
+    effect = "Allow"
+
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
 }
 
 #not yet
@@ -130,6 +152,11 @@ resource "aws_security_group_rule" "nodes" {
   to_port     = 65535
   protocol    = "-1"
   cidr_blocks = flatten([var.private_subnet_cidrs, var.public_subnet_cidrs])
+}
+
+resource "aws_iam_role" "eks_iam_role" {
+  assume_role_policy = data.aws_iam_policy_document.eks_assume_role.json
+  name               = "${var.cluster_name}-eks"
 }
 
 resource "aws_security_group_rule" "nodes_inbound" {
@@ -223,9 +250,9 @@ resource "aws_iam_role_policy_attachment" "eks_policy" {
 resource "aws_eks_node_group" "eks_nodes" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.node_instance_role.arn
+  node_role_arn   = aws_iam_role.eks_nodes.arn  
 
-  subnet_ids = var.subnet_ids
+  subnet_ids = (var.subnet_ids)
 
   scaling_config {
     desired_size = var.desired_capacity
@@ -233,7 +260,7 @@ resource "aws_eks_node_group" "eks_nodes" {
     max_size     = var.max_size
   }
 
-  instance_types = [var.node_instance_type]
+  instance_types = var.node_instance_type
 
    tags = {
     Name = "${var.node_group_name}-nodegroup-public"
@@ -261,23 +288,23 @@ resource "aws_iam_role" "node_instance_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "eks_worker_policy" {
-  role       = aws_iam_role.node_instance_role.name
+  role       = aws_iam_role.eks_nodes.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
-  role       = aws_iam_role.node_instance_role.name
+  role       = aws_iam_role.eks_nodes.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
 resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
-  role       = aws_iam_role.node_instance_role.name
+  role       = aws_iam_role.eks_nodes.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 resource "aws_iam_role_policy_attachment" "aws_ingress_attach" {
   policy_arn = aws_iam_policy.aws_ingress.arn
-  role = aws_iam_role.node_instance_role.name
+  role = aws_iam_role.eks_nodes.name
   
 }
 
