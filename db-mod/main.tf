@@ -21,14 +21,14 @@ resource "aws_security_group" "rds" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = flatten([var.private_subnet_cidrs, var.public_subnet_cidrs])
+    cidr_blocks = flatten([var.private_subnet_cidr_blocks, var.public_subnet_cidr_blocks])
   }
 
   egress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = flatten([var.private_subnet_cidrs, var.public_subnet_cidrs])
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -52,7 +52,7 @@ resource "aws_db_instance" "db" {
   allocated_storage      = 10
   engine                 = "postgres"
   engine_version         = "16.2"
-  username               = "${var.name}_root_user"
+  username               = "rootuser"
   password               = random_password.root_password.result
   db_subnet_group_name   = aws_db_subnet_group.db_subnet.name
   vpc_security_group_ids = [aws_security_group.rds.id]

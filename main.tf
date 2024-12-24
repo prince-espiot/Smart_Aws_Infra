@@ -1,4 +1,3 @@
-
 module "networking" {
   source               = "./networking"
   vpc_cidr             = var.vpc_cidr
@@ -43,16 +42,16 @@ module "eks" {
   vpc_id             = module.networking.dev_proj_1_vpc_id
   subnet_ids         = module.networking.dev_proj_1_public_subnets
   security_group_ids = [module.security_group.sg_ec2_sg_ssh_http_id]
-  private_subnet_cidrs = tolist(module.networking.private_subnet_cidrs_block)
-  public_subnet_cidrs = tolist(module.networking.public_subnet_cidr_block)
-
+  private_subnet_cidrs = module.networking.dev_proj_1_private_subnet_cidr_block
+  public_subnet_cidrs = module.networking.dev_proj_1_public_subnet_cidr_block
 }
 
 module "db_module" {
   source              = "./db-mod"
   name                = "my-app-db"
-  vpc_id = module.networking.dev_proj_1_vpc_id
-  private_subnet_cidrs = tolist(module.networking.private_subnet_cidrs_block)
-  public_subnet_cidrs = tolist(module.networking.public_subnet_cidr_block)
+  vpc_id              = module.networking.dev_proj_1_vpc_id
+  private_subnet_cidrs = module.networking.dev_proj_1_private_subnets
+  public_subnet_cidrs  = module.networking.dev_proj_1_public_subnets
 }
+
 

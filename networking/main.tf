@@ -12,12 +12,24 @@ output "dev_proj_1_public_subnets" {
   value = aws_subnet.dev_proj_1_public_subnets.*.id
 }
 
-output "public_subnet_cidr_block" {
+output "dev_proj_1_private_subnets" {
+  value = aws_subnet.dev_proj_1_private_subnets.*.id
+}
+
+output "dev_proj_1_public_subnet_cidr_block" {
   value = aws_subnet.dev_proj_1_public_subnets.*.cidr_block
 }
 
-output "private_subnet_cidrs_block" {
+output "dev_proj_1_private_subnet_cidr_block" {
   value = aws_subnet.dev_proj_1_private_subnets.*.cidr_block
+}
+
+output "public_subnet_cidr_block" {
+  value = aws_subnet.dev_proj_1_public_subnets.*.id
+}
+
+output "private_subnet_cidrs_block" {
+  value = aws_subnet.dev_proj_1_private_subnets.*.id
 }
 
 # Setup VPC
@@ -37,7 +49,7 @@ resource "aws_subnet" "dev_proj_1_public_subnets" {
   vpc_id            = aws_vpc.dev_proj_1_vpc_eu_north_1.id
   cidr_block        = element(var.cidr_public_subnet, count.index)
   availability_zone = element(var.eu_availability_zone, count.index)
-
+  map_public_ip_on_launch = true
   tags = {
     Name = "dev-proj-public-subnet-${count.index + 1}"
   }
@@ -96,4 +108,10 @@ resource "aws_route_table_association" "dev_proj_1_private_rt_subnet_association
   count          = length(aws_subnet.dev_proj_1_private_subnets)
   subnet_id      = aws_subnet.dev_proj_1_private_subnets[count.index].id
   route_table_id = aws_route_table.dev_proj_1_private_subnets.id
+}
+
+resource "aws_eip" "nat_gateway_eip" {
+  count = length(var.eu_availability_zone)
+  associate_with_private_ip = true
+  
 }
