@@ -9,3 +9,6 @@ variable "vpc_id" {}
 variable "subnet_ids" {}
 variable "private_subnet_cidrs" {}
 variable "public_subnet_cidrs" {}
+variable "region" {
+  default = "eu-north-1"    
+}

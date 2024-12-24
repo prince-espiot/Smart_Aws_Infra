@@ -1,7 +1,5 @@
 # EKS Module
 
-
-
 # Outputs
 output "eks_cluster_endpoint" {
   value = aws_eks_cluster.eks_cluster.endpoint
@@ -22,8 +20,8 @@ resource "aws_eks_cluster" "eks_cluster" {
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   vpc_config {
-    subnet_ids         =  [var.subnet_ids][0]
-    security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
+    subnet_ids         = [var.subnet_ids][0]
+    security_group_ids = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
     endpoint_private_access = true
     endpoint_public_access = false
   }
@@ -47,7 +45,6 @@ resource "aws_iam_role" "eks_role" {
   })
 }
 
-
 # IAM Role for EKS Node Group
 resource "aws_iam_role" "eks_node_group_role" {
   name = "${var.cluster_name}-nodegroup-role"
@@ -67,7 +64,7 @@ resource "aws_iam_role" "eks_node_group_role" {
 }
 
 resource "aws_iam_role" "eks_nodes" {
-  name                 = "${var.cluster_name}-worker"
+  name = "${var.cluster_name}-worker"
 
   assume_role_policy = data.aws_iam_policy_document.assume_workers.json
 }
@@ -85,7 +82,6 @@ data "aws_iam_policy_document" "assume_workers" {
   }
 }
 
-#not yet
 # OIDC Provider for IRSA
 data "aws_eks_cluster" "cluster" {
   name = aws_eks_cluster.eks_cluster.name
@@ -98,7 +94,7 @@ data "aws_eks_cluster_auth" "cluster" {
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
   client_id_list   = ["sts.amazonaws.com"]
   thumbprint_list  = ["9e99a48a9960b14926bb7f3b3aab9027c7980727"] # Adjust as necessary
-  url              = aws_eks_cluster.eks_cluster.identity.0.oidc.0.issuer
+  url              = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
 
 data "aws_iam_policy_document" "eks_assume_role" {
@@ -119,7 +115,65 @@ data "aws_iam_policy_document" "eks_assume_role" {
   }
 }
 
-#Security group associated with eks
+resource "aws_iam_role" "eks_addon_role" {
+  name = "eks-addon-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      },
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer}"
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name = "eks-addon-role"
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_role_policy" "eks_addon_policy" {
+  name   = "eks-addon-policy"
+  role   = aws_iam_role.eks_addon_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:UpdateAddon",
+          "eks:DescribeAddon",
+          "eks:DescribeCluster",
+          "iam:PassRole",
+          "ec2:DescribeInstances",
+          "ec2:AttachVolume"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Security group associated with eks
 resource "aws_security_group" "public_sg" {
   name   = "public-sg-for-eks"
   vpc_id = var.vpc_id
@@ -147,7 +201,7 @@ resource "aws_security_group" "data_plane_sg" {
   }
 }
 
-#Node Sec-group
+# Node Sec-group
 resource "aws_security_group_rule" "nodes" {
   description              = "Allow nodes to communicate with each other"
   security_group_id = aws_security_group.data_plane_sg.id
@@ -182,7 +236,7 @@ resource "aws_security_group_rule" "node_outbound" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
-#SG for control plane 
+# SG for control plane 
 resource "aws_security_group" "control_plane_sg" {
   name   = "kuber-control-plane-sg"
   vpc_id = var.vpc_id
@@ -197,7 +251,7 @@ resource "aws_security_group_rule" "control_plane_inbound" {
   type              = "ingress"
   from_port   = 0
   to_port     = 65535
-  protocol          = "tcp"
+  protocol    = "tcp"
   cidr_blocks = flatten([var.private_subnet_cidrs, var.public_subnet_cidrs])
 }
 
@@ -218,7 +272,7 @@ resource "aws_security_group" "eks_cluster" {
     from_port = 0
     to_port = 0
     protocol = "-1"
-    cidr_blocks = flatten([var.private_subnet_cidrs,  var.public_subnet_cidrs])
+    cidr_blocks = flatten([var.private_subnet_cidrs, var.public_subnet_cidrs])
   }
   tags = {
     Name = "${var.cluster_name}-eks-cluster-sg"
@@ -266,13 +320,15 @@ resource "aws_eks_node_group" "eks_nodes" {
 
   instance_types = [var.node_instance_type]
 
-   tags = {
+  tags = {
     Name = "${var.node_group_name}-nodegroup-public"
-    }
+  }
 
-    depends_on = [ aws_iam_role_policy_attachment.eks_worker_policy,
+  depends_on = [
+    aws_iam_role_policy_attachment.eks_worker_policy,
     aws_iam_role_policy_attachment.eks_cni_policy,
-    aws_iam_role_policy_attachment.eks_registry_policy ]
+    aws_iam_role_policy_attachment.eks_registry_policy
+  ]
 }
 
 # Node IAM Role
@@ -308,41 +364,37 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
 
 resource "aws_iam_role_policy_attachment" "aws_ingress_attach" {
   policy_arn = aws_iam_policy.aws_ingress.arn
-  role = aws_iam_role.eks_nodes.name
-  
+  role       = aws_iam_role.eks_nodes.name
 }
 
-#not yet
 resource "aws_iam_policy" "aws_ingress" {
   policy = file("${path.module}/aws_ingress_policy.json")
 }
 
-
 resource "aws_eks_addon" "cni" {
-  cluster_name                = var.cluster_name
-  addon_name                  = "vpc-cni"
-  depends_on = [aws_eks_cluster.eks_cluster]
+  cluster_name = var.cluster_name
+  addon_name   = "vpc-cni"
+  depends_on   = [aws_eks_cluster.eks_cluster]
 }
 
 resource "aws_eks_addon" "kube-proxy" {
-  cluster_name                = var.cluster_name
-  addon_name                  = "kube-proxy"
-  depends_on = [aws_eks_cluster.eks_cluster]
+  cluster_name = var.cluster_name
+  addon_name   = "kube-proxy"
+  depends_on   = [aws_eks_cluster.eks_cluster]
 }
+
 resource "aws_eks_addon" "coredns" {
-  cluster_name                = var.cluster_name
-  addon_name                  = "coredns"
-  depends_on = [aws_eks_cluster.eks_cluster, aws_eks_node_group.eks_nodes]
-  
+  cluster_name = var.cluster_name
+  addon_name   = "coredns"
+  depends_on   = [aws_eks_cluster.eks_cluster, aws_eks_node_group.eks_nodes]
 }
 
 resource "aws_eks_addon" "ebs" {
-  cluster_name = var.cluster_name
-  addon_name = "aws-ebs-csi-driver"
-  depends_on = [ aws_eks_cluster.eks_cluster ]
-  service_account_role_arn = aws_iam_role.eks_role.arn
-  }
-
+  cluster_name             = var.cluster_name
+  addon_name               = "aws-ebs-csi-driver"
+  service_account_role_arn = aws_iam_role.eks_addon_role.arn
+  depends_on               = [aws_eks_cluster.eks_cluster]
+}
 
 resource "aws_security_group" "eks_nodes" {
   name        = "${var.cluster_name}-eks-node-sg"
@@ -358,7 +410,6 @@ resource "aws_security_group" "eks_nodes" {
 
   tags = {
     Name                                        = "${var.cluster_name}-eks-node-sg"
-    "kubernetes.io/cluster/${var.cluster_name }" = "owned"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
-
