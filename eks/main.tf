@@ -22,13 +22,11 @@ resource "aws_eks_cluster" "eks_cluster" {
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   vpc_config {
-    subnet_ids         =  (var.subnet_ids)
+    subnet_ids         =  [var.subnet_ids][0]
     security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
     endpoint_private_access = true
     endpoint_public_access = false
   }
-
-  depends_on = [aws_iam_role_policy_attachment.eks_policy]
 }
 
 # EKS Cluster IAM Role
@@ -88,13 +86,19 @@ data "aws_iam_policy_document" "assume_workers" {
 }
 
 #not yet
-data "tls_certificate" "cluster" {
-  url = aws_eks_cluster.eks_cluster.identity.0.oidc.0.issuer
+# OIDC Provider for IRSA
+data "aws_eks_cluster" "cluster" {
+  name = aws_eks_cluster.eks_cluster.name
 }
-resource "aws_iam_openid_connect_provider" "cluster" {
-  client_id_list = ["sts.amazonaws.com"]
-  thumbprint_list = concat([data.tls_certificate.cluster.certificates.0.sha1_fingerprint])
-  url = aws_eks_cluster.eks_cluster.identity.0.oidc.0.issuer
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.eks_cluster.name
+}
+
+resource "aws_iam_openid_connect_provider" "oidc_provider" {
+  client_id_list   = ["sts.amazonaws.com"]
+  thumbprint_list  = ["9e99a48a9960b14926bb7f3b3aab9027c7980727"] # Adjust as necessary
+  url              = aws_eks_cluster.eks_cluster.identity.0.oidc.0.issuer
 }
 
 data "aws_iam_policy_document" "eks_assume_role" {
@@ -104,12 +108,12 @@ data "aws_iam_policy_document" "eks_assume_role" {
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(aws_iam_openid_connect_provider.cluster.url, "https://", "")}:sub"
+      variable = "${replace(aws_iam_openid_connect_provider.oidc_provider.url, "https://", "")}:sub"
       values   = ["system:serviceaccount:kube-system:aws-node"]
     }
 
     principals {
-      identifiers = [aws_iam_openid_connect_provider.cluster.arn]
+      identifiers = [aws_iam_openid_connect_provider.oidc_provider.arn]
       type        = "Federated"
     }
   }
@@ -252,7 +256,7 @@ resource "aws_eks_node_group" "eks_nodes" {
   node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.eks_nodes.arn  
 
-  subnet_ids = (var.subnet_ids)
+  subnet_ids = [var.subnet_ids][0]
 
   scaling_config {
     desired_size = var.desired_capacity
@@ -260,7 +264,7 @@ resource "aws_eks_node_group" "eks_nodes" {
     max_size     = var.max_size
   }
 
-  instance_types = var.node_instance_type
+  instance_types = [var.node_instance_type]
 
    tags = {
     Name = "${var.node_group_name}-nodegroup-public"
@@ -335,15 +339,10 @@ resource "aws_eks_addon" "coredns" {
 resource "aws_eks_addon" "ebs" {
   cluster_name = var.cluster_name
   addon_name = "aws-ebs-csi-driver"
-  resolve_conflicts_on_create = "OVERWRITE"
   depends_on = [ aws_eks_cluster.eks_cluster ]
   service_account_role_arn = aws_iam_role.eks_role.arn
-}
+  }
 
-resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy_attachment" {
-  role       = aws_iam_role.eks_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-}
 
 resource "aws_security_group" "eks_nodes" {
   name        = "${var.cluster_name}-eks-node-sg"
@@ -362,3 +361,4 @@ resource "aws_security_group" "eks_nodes" {
     "kubernetes.io/cluster/${var.cluster_name }" = "owned"
   }
 }
+

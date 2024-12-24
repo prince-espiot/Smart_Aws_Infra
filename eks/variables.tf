@@ -7,6 +7,5 @@ variable "min_size" {}
 variable "max_size" {}
 variable "vpc_id" {}
 variable "subnet_ids" {}
-variable "security_group_ids" {}
 variable "private_subnet_cidrs" {}
 variable "public_subnet_cidrs" {}

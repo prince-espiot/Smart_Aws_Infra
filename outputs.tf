@@ -9,19 +9,19 @@ output "backend_kms_key_arn" {
 output "rds_hostname" {
   description = "RDS instance hostname"
   value       = module.db_module.rds_hostname
-  sensitive   = true
+  sensitive   = false
 }
 
 output "rds_port" {
   description = "RDS instance port"
   value       = module.db_module.rds_port
-  sensitive   = true
+  sensitive   = false
 }
 
 output "rds_username" {
   description = "RDS instance root username"
   value       = module.db_module.rds_username
-  sensitive   = true
+  sensitive   = false
 }
 
 output "rds_password" {

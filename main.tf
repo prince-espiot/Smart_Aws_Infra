@@ -41,7 +41,6 @@ module "eks" {
   max_size           = 3
   vpc_id             = module.networking.dev_proj_1_vpc_id
   subnet_ids         = module.networking.dev_proj_1_public_subnets
-  security_group_ids = [module.security_group.sg_ec2_sg_ssh_http_id]
   private_subnet_cidrs = module.networking.dev_proj_1_private_subnet_cidr_block
   public_subnet_cidrs = module.networking.dev_proj_1_public_subnet_cidr_block
 }
