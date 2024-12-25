@@ -1,11 +1,3 @@
-variable "ec2_sg_name" {}
-variable "vpc_id" {}
-variable "public_subnet_cidr_block" {}
-
-output "sg_ec2_sg_ssh_http_id" {
-  value = aws_security_group.ec2_sg_ssh_http.id
-}
-
 
 resource "aws_security_group" "ec2_sg_ssh_http" {
   name        = var.ec2_sg_name

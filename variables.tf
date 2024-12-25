@@ -38,10 +38,6 @@ variable "eu_availability_zone" {
   description = "Availability Zones"
 }
 
-variable "public_key" {
-  type        = string
-  description = "DevOps Project Public key for EC2 instance"
-}
 
 variable "ec2_ami_id" {
   type        = string

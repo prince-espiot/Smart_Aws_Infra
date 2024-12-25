@@ -1,16 +1,4 @@
-variable "ami_id" {}
-variable "instance_type" {}
-variable "tag_name" {}
-variable "public_key" {}
-variable "subnet_id" {}
-variable "sg_enable_ssh_https" {}
-variable "enable_public_ip_address" {}
-variable "user_data_install_apache" {}
-#variable "ec2_sg_name_for_python_api" {}
-
-
-
-resource "aws_instance" "dev_proj_1_ec2" {
+resource "aws_instance" "ec2" {
   ami           = var.ami_id
   instance_type = var.instance_type
   tags = {
@@ -29,7 +17,7 @@ resource "aws_instance" "dev_proj_1_ec2" {
   }
 }
 
-resource "aws_key_pair" "dev_proj_1_public_key" {
+resource "aws_key_pair" "public_key" {
   key_name   = "aws_key"
   public_key = var.public_key
 }

@@ -1,12 +1,12 @@
 bucket_name = "dev-princeok-1-remote-state-bucket"
-name        = "environment"
-environment = "dev-1"
+name        = "SmartBI"
+environment = "Staging"
 vpc_cidr             = "10.0.0.0/16"
-vpc_name             = "dev-proj-eu-north-vpc-1"
+vpc_name             = "smartbi-vpc"
 cidr_public_subnet   = ["10.0.1.0/24", "10.0.2.0/24"]
 cidr_private_subnet  = ["10.0.3.0/24", "10.0.4.0/24"]
 eu_availability_zone = ["eu-north-1a", "eu-north-1b"]
-public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDb5+ZbTZC6Z5Ysp6U5g2y5jz2GK3jWHOAaCvYIi+FgE6mO5w2v828qBUTF3e6RcCKolD4NdgK2UQdH2bqNu0AJ3PvSM9jzbIJPZjdk5wNTrjlg5EADfm7Oc+ucnvJy1/oLMgpFpJaN5oozgLNnTmlD0zceXAigFuqWyPuEp2inprCe3EAZvsoJ9trjm9UruiKN+YKDNrCCBYSmCh71QwlaW0hIGad7v9t91e+lM1GYlol723vIqkv6Hemf6T4B8apGzAk4sVPA41hLnSEI4jfiTKaJ0nTkL3r55Xen+udiyTx/awqZYYsnUIDoSjbK2SxjIf/D5cBIVZ/5W4LzXRhf admin@DESKTOP-7847I2M"
+//public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDb5+ZbTZC6Z5Ysp6U5g2y5jz2GK3jWHOAaCvYIi+FgE6mO5w2v828qBUTF3e6RcCKolD4NdgK2UQdH2bqNu0AJ3PvSM9jzbIJPZjdk5wNTrjlg5EADfm7Oc+ucnvJy1/oLMgpFpJaN5oozgLNnTmlD0zceXAigFuqWyPuEp2inprCe3EAZvsoJ9trjm9UruiKN+YKDNrCCBYSmCh71QwlaW0hIGad7v9t91e+lM1GYlol723vIqkv6Hemf6T4B8apGzAk4sVPA41hLnSEI4jfiTKaJ0nTkL3r55Xen+udiyTx/awqZYYsnUIDoSjbK2SxjIf/D5cBIVZ/5W4LzXRhf admin@DESKTOP-7847I2M"
 ec2_ami_id     = "ami-075449515af5df0d1"
 ec2_user_data_install_apache = ""
 domain_name = "princeokumo.com"

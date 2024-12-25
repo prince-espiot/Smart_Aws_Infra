@@ -10,13 +10,13 @@ module "networking" {
 module "security_group" {
   source                     = "./security-groups"
   ec2_sg_name                = "SG for EC2 to enable SSH(22) and HTTP(80)"
-  vpc_id                     = module.networking.dev_proj_1_vpc_id #check if you need to add id
+  vpc_id                     = module.networking.vpc_id #check if you need to add id
   public_subnet_cidr_block   = tolist(module.networking.public_subnet_cidr_block)
 }
 
 module "s3_backend" {
   source = "./s3" # Path to your module folder
-  name   = "my-environment"
+  name   = "smartbi"
 }
 
 module "ec2" {
@@ -24,8 +24,7 @@ module "ec2" {
   ami_id                   = var.ec2_ami_id
   instance_type            = "t3.micro"
   tag_name                 = "Ubuntu Linux EC2"
-  public_key               = var.public_key
-  subnet_id                = tolist(module.networking.dev_proj_1_public_subnets)[0]
+  subnet_id                = tolist(module.networking.public_subnets)[0]
   sg_enable_ssh_https      = module.security_group.sg_ec2_sg_ssh_http_id
   enable_public_ip_address = true
   user_data_install_apache = templatefile("./template/ec2_install_apache.sh", {})
@@ -39,18 +38,18 @@ module "eks" {
   desired_capacity   = 2
   min_size           = 1
   max_size           = 3
-  vpc_id             = module.networking.dev_proj_1_vpc_id
-  subnet_ids         = module.networking.dev_proj_1_public_subnets
-  private_subnet_cidrs = module.networking.dev_proj_1_private_subnet_cidr_block
-  public_subnet_cidrs = module.networking.dev_proj_1_public_subnet_cidr_block
+  vpc_id             = module.networking.vpc_id
+  subnet_ids         =module.networking.public_subnets
+  private_subnet_cidrs = module.networking.private_subnet_cidr_block
+  public_subnet_cidrs = module.networking.public_subnet_cidr_block
 }
 
 module "db_module" {
   source              = "./db-mod"
-  name                = "my-app-db"
-  vpc_id              = module.networking.dev_proj_1_vpc_id
-  private_subnet_cidrs = module.networking.dev_proj_1_private_subnets
-  public_subnet_cidrs  = module.networking.dev_proj_1_public_subnets
+  name                = "smart-db"
+  vpc_id              = module.networking.vpc_id
+  private_subnet_cidrs = module.networking.private_subnets
+  public_subnet_cidrs  = module.networking.public_subnets
 }
 
 
