@@ -57,7 +57,6 @@ variable "domain_name" {
 variable "cluster_name" {
   type        = string
   description = "Tag name"
-  default = "Smartbi-cluster"
 }
 
 variable "node_group_name" {

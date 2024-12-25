@@ -19,7 +19,7 @@ resource "aws_subnet" "public_subnets" {
   tags = {
     Name = "public-subnet-${count.index + 1}"
     "kubernetes.io/role/elb"                               = "1"
-    "kubernetes.io/cluster/${var.environment}-${var.cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
   # Explicitly define dependencies to ensure subnets are created after the VPC
   depends_on = [aws_vpc.main]
@@ -35,7 +35,7 @@ resource "aws_subnet" "private_subnets" {
   tags = {
     Name = "private-subnet-${count.index + 1}"
     "kubernetes.io/role/internal-elb"                     = "1" # Correct tag for private subnets
-    "kubernetes.io/cluster/${var.environment}-${var.cluster_name}" = "shared"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }
 

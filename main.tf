@@ -53,3 +53,11 @@ module "db_module" {
 }
 
 
+module "aws_lbc" {
+  source            = "./load-balancer"
+  eks_cluster_name  = module.eks.cluster_name
+  vpc_id            = module.networking.vpc_id
+  policy_file_path  = "./iam/AWSLoadBalancerController.json"
+}
+
+
