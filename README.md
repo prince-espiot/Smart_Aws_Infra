@@ -51,3 +51,34 @@ Reference this
 
  ## Note 
 **Note:** It doesn't automatically attach to the StorageClass, so you have to edit the respective PV and the default storage class and add `gp2`.
+
+ ## Manual step
+6. **Obtain SSL Certificate with AWS Certificate Manager (ACM)**
+    - Request a certificate in ACM for your domain:
+      ```sh
+      aws acm request-certificate --domain-name yourdomain.com --validation-method DNS
+      ```
+    - Note the `CertificateArn` from the output.
+
+7. **Validate Domain Ownership**
+    - Retrieve the CNAME record details for domain validation:
+      ```sh
+      aws acm describe-certificate --certificate-arn <CertificateArn>
+      ```
+    - Create a DNS record of type CNAME in your domain's DNS provider with the details obtained from the previous step.
+
+8. **Create DNS Record for AWS ALB**
+    - After the certificate is issued, create a DNS record of type CNAME that resolves to the DNS name of your AWS Application Load Balancer (ALB):
+      ```sh
+      aws route53 change-resource-record-sets --hosted-zone-id <HostedZoneId> --change-batch '{
+        "Changes": [{
+          "Action": "CREATE",
+          "ResourceRecordSet": {
+            "Name": "yourdomain.com",
+            "Type": "CNAME",
+            "TTL": 300,
+            "ResourceRecords": [{"Value": "your-alb-dns-name.amazonaws.com"}]
+          }
+        }]
+      }'
+      ```
