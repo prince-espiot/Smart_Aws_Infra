@@ -54,11 +54,6 @@ variable "domain_name" {
   description = "Name of the domain"
 }
 
-variable "cluster_name" {
-  type        = string
-  description = "Tag name"
-}
-
 variable "node_group_name" {
   type = string
   default = "node_group_name"

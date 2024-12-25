@@ -13,7 +13,7 @@ The Smart_Aws_Infra project provides a comprehensive solution for deploying a mo
 - Helm installed
 
 ## Steps
-
+### Monitoring
 1. **Add Helm Repositories**
     ```sh
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
