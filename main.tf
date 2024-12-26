@@ -15,7 +15,7 @@ module "security_group" {
 }
 
 module "s3_backend" {
-  source = "./s3" # Path to your module folder
+  source = "./s3" 
   name   = "smartbi"
 }
 

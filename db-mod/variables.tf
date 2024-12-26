@@ -27,4 +27,7 @@ variable "public_subnet_cidr_blocks" {
   default = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
-variable "vpc_id" {}
+variable "vpc_id" {
+  description = "ID of the VPC"
+  type        = string
+}

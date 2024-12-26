@@ -49,10 +49,6 @@ variable "ec2_user_data_install_apache" {
   description = "Script for installing the Apache2"
 }
 
-variable "domain_name" {
-  type = string
-  description = "Name of the domain"
-}
 
 variable "node_group_name" {
   type = string

@@ -33,3 +33,8 @@ output "rds_password" {
 output "Bastion_ip" {
   value = module.ec2.public_ip
 }
+
+output "dns_zone_id" {
+  value = module.dns.hosted_zone_id
+  
+}
