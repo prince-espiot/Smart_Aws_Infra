@@ -1,4 +1,4 @@
-# Create IAM role for EC2 instance
+/*# Create IAM role for EC2 instance
 resource "aws_iam_role" "ec2_role" {
   name = "EC2_SSM_Role"
 
@@ -27,7 +27,7 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "EC2_SSM_Instance_Profile"
 
   role = aws_iam_role.ec2_role.name
-}
+}*/
 
 resource "aws_instance" "ec2" {
   ami           = var.ami_id
@@ -39,7 +39,7 @@ resource "aws_instance" "ec2" {
   subnet_id                   = var.subnet_id
   vpc_security_group_ids      = [var.sg_enable_ssh_https]
   associate_public_ip_address = var.enable_public_ip_address
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  //iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   user_data = var.user_data_install_apache
 
   metadata_options {
