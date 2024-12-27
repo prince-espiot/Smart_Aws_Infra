@@ -38,6 +38,10 @@ variable "eu_availability_zone" {
   description = "Availability Zones"
 }
 
+variable "domain_name" {
+  type = string
+  description = "Name of the domain"
+}
 
 variable "ec2_ami_id" {
   type        = string

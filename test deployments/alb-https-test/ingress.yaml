@@ -5,7 +5,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myapp
-  namespace: 7-example
+  io.kompose.service: myapp
   annotations:
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-north-1:481665127750:certificate/8f1ef448-526e-482c-9b4f-8eb373a26cb8
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
@@ -13,6 +13,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/healthcheck-path: /health
+    #alb.ingress.kubernetes.io/hostname: test.princeokumo.com
 spec:
   ingressClassName: alb
   rules:

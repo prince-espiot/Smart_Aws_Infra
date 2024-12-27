@@ -52,12 +52,13 @@ module "db_module" {
   public_subnet_cidrs  = module.networking.public_subnets
 }
 
-
-module "aws_lbc" {
+# Only implement this module if you have applied the previous modules.
+/*module "aws_lbc" {
   source            = "./load-balancer"
   eks_cluster_name  = module.eks.cluster_name
   vpc_id            = module.networking.vpc_id
   policy_file_path  = "./iam/AWSLoadBalancerController.json"
-}
+
+}*/
 
 
