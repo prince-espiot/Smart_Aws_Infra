@@ -25,7 +25,7 @@ module "ec2" {
   user_data_install_apache = templatefile("./template/ec2_install_apache.sh", {})
 }
 
-/*
+
 module "s3_backend" {
   source = "./s3" 
   name   = var.s3_name  #name must be unique and small letters
@@ -53,13 +53,15 @@ module "db_module" {
   public_subnet_cidrs  = module.networking.public_subnets
 }
 
+
+# Only implement this two module if you have applied the previous modules.
 module "Devops_tools" {
   source = "./observability_n_gitops"
   eks_cluster_name = module.eks.cluster_name
 
 }
 
-# Only implement this module if you have applied the previous modules.
+
 module "aws_lbc" {
   source            = "./load-balancer"
   eks_cluster_name  = module.eks.cluster_name
@@ -68,5 +70,5 @@ module "aws_lbc" {
   policy_file_path  = "./iam/AWSLoadBalancerController.json"
 
 }
-*/
+
 

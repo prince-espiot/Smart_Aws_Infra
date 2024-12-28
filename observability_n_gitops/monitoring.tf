@@ -1,3 +1,14 @@
+
+resource "kubernetes_storage_class" "default" {
+  metadata {
+    name = "gp2"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+  storage_provisioner = "kubernetes.io/aws-ebs"
+}
+
 resource "helm_release" "prometheus" {
   name       = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
