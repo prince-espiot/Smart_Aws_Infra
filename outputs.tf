@@ -1,4 +1,4 @@
-output "backend_bucket_name" {
+/*output "backend_bucket_name" {
   value = module.s3_backend.bucket_name
 }
 
@@ -29,7 +29,7 @@ output "rds_password" {
   value = module.db_module.db_password
   sensitive = true
 }
-
+*/
 output "Bastion_ip" {
   value = module.ec2.public_ip
 }

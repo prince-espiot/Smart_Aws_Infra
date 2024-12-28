@@ -7,4 +7,4 @@ bases:
 
 images:
   - name: aputra/myapp-195
-    newTag: v1
+    newTag: v2

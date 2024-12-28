@@ -1,7 +1,8 @@
-variable "bucket_name" {
+/*variable "bucket_name" {
   type        = string
   description = "Remote state bucket name"
 }
+*/
 
 variable "name" {
   type        = string
@@ -56,6 +57,37 @@ variable "ec2_user_data_install_apache" {
 
 variable "node_group_name" {
   type = string
-  default = "node_group_name"
+  default = "eks-node-group"
   description = "node group name"
+}
+
+variable "eks_cluster_name" {
+  type = string
+  default = "eks_cluster_name"
+  description = "eks cluster name"  
+  
+}
+
+variable "node_instance_type" {
+  type = string
+  default = "t3.medium"
+  description = "node instance type"
+}
+
+variable "ec2_instance_type" {
+  type = string
+  default = "t3.micro"
+  description = "ec2 instance type"
+}
+
+variable "s3_name" {
+  type = string
+  default = "s3_name"
+  description = "smartbi" 
+  
+}
+
+variable "region" {
+  type = string
+  description = "aws region"
 }

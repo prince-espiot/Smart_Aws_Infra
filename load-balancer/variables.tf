@@ -14,4 +14,9 @@ variable "policy_file_path" {
   default     = "./iam/AWSLoadBalancerController.json"
 }
 
+variable "cluster_region" {
+  description = "The region where the EKS cluster is deployed"
+  type        = string  
+  
+}
 

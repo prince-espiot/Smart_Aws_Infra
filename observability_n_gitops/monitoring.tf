@@ -26,6 +26,10 @@ resource "helm_release" "prometheus" {
     value = true # Set to true if persistent storage is required
   }
   set {
+    name  = "server.persistentVolume.storageClass"
+    value = "gp2" # Set the storage class to gp2
+  }
+  set {
     name = "clusterName"
     value = var.eks_cluster_name
   }
