@@ -4,7 +4,7 @@
 The Smart_Aws_Infra project provides a comprehensive solution for deploying a monitoring stack on a Kubernetes cluster using Prometheus and Grafana. This setup enables robust monitoring and visualization of your Kubernetes infrastructure, ensuring you can track performance metrics, set up alerts, and gain insights into the health and status of your applications and services. The deployment process leverages Helm charts to simplify the installation and management of Prometheus and Grafana, making it easier to maintain and scale your monitoring infrastructure.
 
 <p align="center">
-  <img src="image.png" alt="Architecture Diagram">
+  <img src="smartinfra.gif" alt="Architecture Diagram">
 </p>
 
 
