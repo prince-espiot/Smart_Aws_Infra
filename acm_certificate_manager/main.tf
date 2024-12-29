@@ -22,7 +22,7 @@ resource "aws_route53_record" "validation" {
     }
   }
 
-  zone_id = var.hosted_zone_id # replace with your Hosted Zone ID
+  zone_id = data.aws_route53_zone.selected.zone_id # replace with your Hosted Zone ID
   name    = each.value.name
   type    = each.value.type
   records = [each.value.record]

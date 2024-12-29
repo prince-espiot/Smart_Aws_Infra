@@ -1,4 +1,4 @@
-module "networking" {
+/*module "networking" {
   source               = "./networking"
   vpc_cidr             = var.vpc_cidr
   vpc_name             = var.vpc_name
@@ -54,14 +54,9 @@ module "db_module" {
 }
 
 
-# Only implement this two module if you have applied the previous modules.
-module "Devops_tools" {
-  source = "./observability_n_gitops"
-  eks_cluster_name = module.eks.cluster_name
-
-}
 
 
+# Only implement this four module if you have applied the previous modules.
 module "aws_lbc" {
   source            = "./load-balancer"
   eks_cluster_name  = module.eks.cluster_name
@@ -71,4 +66,21 @@ module "aws_lbc" {
 
 }
 
+module "Devops_tools" {
+  source = "./observability_n_gitops"
+  eks_cluster_name = module.eks.cluster_name
 
+}
+*/
+
+module "acm" {
+  source = "./acm_certificate_manager"
+  domain_name = var.domain_name
+  hosted_zone_id = var.domain_name
+}
+
+module "route53" {
+  source = "./route53"
+  domain_name = var.domain_name
+  aws_lb_dns_name = var.aws_lb_dns_name   #DNS name of the load balancer manually add this from kubctl get ingress
+}

@@ -12,8 +12,17 @@ resource "aws_route53_record" "lb_record" {
 
   alias {
     name                   = var.aws_lb_dns_name
-    zone_id                = var.aws_lb_zone_id
+    zone_id                = data.aws_route53_zone.princeokumo_com.zone_id
     evaluate_target_health = true
   }
+}
+
+resource "aws_route53_record" "web_record" {
+  zone_id = data.aws_route53_zone.princeokumo_com.zone_id
+  name    = "www.${var.domain_name}"
+  type    = "CNAME"
+
+  records = [var.aws_lb_dns_name] #Add the DNS name of the load balancer
+  
 }
 

@@ -16,3 +16,4 @@ node_instance_type = "t3.medium"
 ec2_instance_type = "t3.medium"
 s3_name = "smartbi"
 node_group_name = "eks-node-group"
+aws_lb_dns_name= "weyrukuryhetjeyjry.tjetje.wrhr"  #DNS name of the load balancer
