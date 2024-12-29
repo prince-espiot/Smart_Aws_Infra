@@ -8,6 +8,10 @@ The Smart_Aws_Infra project offers a robust and integrated solution for deployin
 
 ## AWS Services and Tools
 
+</p>
+
+<p align="center">
+
 | AWS Services | Tools Included |
 |--------------|----------------|
 | EKS          | Prometheus     |
