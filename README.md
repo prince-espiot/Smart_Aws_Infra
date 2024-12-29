@@ -1,88 +1,76 @@
 # Smart_Aws_Infra
 
 ## Description 
-The Smart_Aws_Infra project provides a comprehensive solution for deploying a monitoring stack on a Kubernetes cluster using Prometheus and Grafana. This setup enables robust monitoring and visualization of your Kubernetes infrastructure, ensuring you can track performance metrics, set up alerts, and gain insights into the health and status of your applications and services. The deployment process leverages Helm charts to simplify the installation and management of Prometheus and Grafana, making it easier to maintain and scale your monitoring infrastructure.
+The Smart_Aws_Infra project offers a robust and integrated solution for deploying, monitoring, and managing Kubernetes clusters using GitOps principles. This infrastructure setup comes pre-configured with essential tools for seamless deployment, comprehensive monitoring, and efficient GitOps workflows. By leveraging AWS services and popular open-source tools, Smart_Aws_Infra ensures a scalable, reliable, and automated environment for your Kubernetes applications.
 
+
+<p align="center">
+
+## AWS Services and Tools
+
+| AWS Services | Tools Included |
+|--------------|----------------|
+| EKS          | Prometheus     |
+| EC2          | Grafana        |
+| VPC          | ArgoCD         |
+| ACM          | Helm           |
+| Route53      |                |
+| S3           |                |
+| ALB          |                |
+
+</p>
+
+
+
+## Architecture
 <p align="center">
   <img src="smartinfra.gif" alt="Architecture Diagram">
 </p>
 
-
-## Prerequisites
-
-- Kubernetes cluster
-- kubectl configured
-- Helm installed
-
 ## Steps
-### Monitoring
-1. **Add Helm Repositories**
+### Infrastructure Provision 
+1. **Configure Terraform Variables**
+  - Edit the `terraform.tfvars` file with custom parameters as needed.
+
+2. **Initialize Terraform**
+  - Run the following command to initialize the Terraform configuration:
     ```sh
-    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-    helm repo add grafana https://grafana.github.io/helm-charts
-    helm repo update
+    terraform init
     ```
 
-2. **Create Monitoring Namespace**
+3. **Plan the Infrastructure**
+  - Generate and review the execution plan for the infrastructure:
     ```sh
-    kubectl create namespace monitoring
+    terraform plan
     ```
 
-3. **Install Prometheus**
+4. **Apply the Configuration**
+  - Apply the Terraform configuration to provision the infrastructure:
     ```sh
-    helm install prometheus prometheus-community/prometheus --namespace monitoring
+    terraform apply -auto-approve
     ```
 
-4. **Install Grafana**
+5. **Access the Bastion Host**
+  - After the infrastructure is provisioned, use the output parameters to log in to your bastion host via ssh.
+
+### AWS CLI Configuration
+6. **Configure AWS CLI**
+  - Run the following command to configure your AWS CLI with your access key and secret access key:
     ```sh
-    helm install grafana grafana/grafana --namespace monitoring
+    aws configure
     ```
 
-5. **Access Grafana**
-    - Get the Grafana admin password:
-      ```sh
-      kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-      ```
-    - Port forward to access Grafana UI:
-      ```sh
-      kubectl port-forward --namespace monitoring svc/grafana 3000:80
-      ```
-    - Open your browser and go to `http://localhost:3000`, login with `admin` and the password retrieved above.
-Reference this 
- https://medium.com/@akilblanchard09/monitoring-a-kubernetes-cluster-using-prometheus-and-grafana-8e0f21805ea9
+### Update Kubeconfig for EKS Cluster
+7. **Update Kubeconfig**
+  - Run the following command to update your kubeconfig file with the EKS cluster details:
+    ```sh
+    aws eks update-kubeconfig --name <name-of-cluster> --region <region>
+    ```
 
- kubectl -n gitops get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d ; echo
-
+ 
+ 
  ## Note 
 **Note:** It doesn't automatically attach to the StorageClass, so you have to edit the respective PV and the default storage class and add `gp2`.
 
  ## Manual step
-6. **Obtain SSL Certificate with AWS Certificate Manager (ACM)**
-    - Request a certificate in ACM for your domain:
-      ```sh
-      aws acm request-certificate --domain-name yourdomain.com --validation-method DNS
-      ```
-    - Note the `CertificateArn` from the output.
 
-7. **Validate Domain Ownership**
-    - Retrieve the CNAME record details for domain validation:
-      ```sh
-      aws acm describe-certificate --certificate-arn <CertificateArn>
-      ```
-    - Create a DNS record of type CNAME in your domain's DNS provider with the details obtained from the previous step.
-
-8. **Create DNS Record for AWS ALB**
-    - After the certificate is issued, create a DNS record of type CNAME that resolves to the DNS name of your AWS Application Load Balancer (ALB):
-      ```sh
-      aws route53 change-resource-record-sets --hosted-zone-id <HostedZoneId> --change-batch '{
-        "Changes": [{
-          "Action": "CREATE",
-          "ResourceRecordSet": {
-            "Name": "yourdomain.com",
-            "Type": "CNAME",
-            "TTL": 300,
-            "ResourceRecords": [{"Value": "your-alb-dns-name.amazonaws.com"}]
-          }
-        }]
-      }'
-      ```
