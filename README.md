@@ -20,7 +20,6 @@ The Smart_Aws_Infra project offers a robust and integrated solution for deployin
 </div>
 
 
-
 ## Architecture
 <p align="center">
   <img src="smartinfra.gif" alt="Architecture Diagram">
