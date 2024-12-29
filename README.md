@@ -4,13 +4,9 @@
 The Smart_Aws_Infra project offers a robust and integrated solution for deploying, monitoring, and managing Kubernetes clusters using GitOps principles. This infrastructure setup comes pre-configured with essential tools for seamless deployment, comprehensive monitoring, and efficient GitOps workflows. By leveraging AWS services and popular open-source tools, Smart_Aws_Infra ensures a scalable, reliable, and automated environment for your Kubernetes applications.
 
 
-<p align="center">
+<div align="center">
 
 ## AWS Services and Tools
-
-</p>
-
-<p align="center">
 
 | AWS Services | Tools Included |
 |--------------|----------------|
@@ -21,8 +17,7 @@ The Smart_Aws_Infra project offers a robust and integrated solution for deployin
 | Route53      |                |
 | S3           |                |
 | ALB          |                |
-
-</p>
+</div>
 
 
 

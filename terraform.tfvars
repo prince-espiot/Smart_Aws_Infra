@@ -1,5 +1,4 @@
 region      = "eu-north-1"
-//bucket_name = "dev-princeok-1-remote-state-bucket"
 name        = "SmartBI"
 environment = "Staging"
 vpc_cidr             = "10.0.0.0/16"
