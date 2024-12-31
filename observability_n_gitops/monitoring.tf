@@ -1,13 +1,4 @@
 
-resource "kubernetes_storage_class" "default" {
-  metadata {
-    name = "gp2"
-    annotations = {
-      "storageclass.kubernetes.io/is-default-class" = "true"
-    }
-  }
-  storage_provisioner = "kubernetes.io/aws-ebs"
-}
 
 resource "helm_release" "prometheus" {
   name       = "prometheus"
@@ -44,6 +35,8 @@ resource "helm_release" "prometheus" {
     name = "clusterName"
     value = var.eks_cluster_name
   }
+
+  #depends_on = [ kubernetes_storage_class.default ]
 }
 
 resource "helm_release" "grafana" {

@@ -29,6 +29,9 @@ The Smart_Aws_Infra project offers a robust and integrated solution for deployin
 </p>
 
 ## Steps
+### Before Provisioning
+The infrastructure is divided into ten modules within the `./main.tf` file. To ensure a smooth setup process, apply the first six modules initially before adding and applying the remaining four modules.
+
 ### Infrastructure Provision 
 1. **Configure Terraform Variables**
   - Edit the `terraform.tfvars` file with custom parameters as needed.
@@ -71,7 +74,11 @@ The Smart_Aws_Infra project offers a robust and integrated solution for deployin
  
  
  ## Note 
-**Note:** It doesn't automatically attach to the StorageClass, so you have to edit the respective PV and the default storage class and add `gp2`.
+**Note:** The PersistentVolume (PV) does not automatically attach to the StorageClass. You need to manually edit the PV and set the default StorageClass to `gp2`. To patch the StorageClass, run the following command:
+```sh
+kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
+
 
  ## Manual step
 
@@ -105,12 +112,24 @@ The Smart_Aws_Infra project offers a robust and integrated solution for deployin
     ```sh
     ssh -T git@github.com
     ```
+  
+### ArgoCD setup
+1. **Create ArgoCD Namespace**
+  - Run the following command to create the `argocd` namespace (if it doesn't already exist):
+    ```sh
+    kubectl create namespace argocd || echo "Namespace argocd already exists"
+    ```
+
+2. **Install ArgoCD**
+  - Apply the ArgoCD installation manifest to the `argocd` namespace:
+    ```sh
+    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    ```
   - You should see a success message indicating that you have successfully authenticated.
 Retrieving the initial single sign-on password for the ArgoCD UI: 
 ```sh
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
-### ArgoCD setup
 1. **Access ArgoCD**
   - Access the ArgoCD UI using the Load Balancer URL and the initial password.
 

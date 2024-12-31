@@ -1,4 +1,4 @@
-resource "helm_release" "argo_cd" {
+/*resource "helm_release" "argo_cd" {
   name       = "argo-cd"
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
@@ -46,7 +46,7 @@ set {
 }
   
 }
-
+*/
 /*resource "null_resource" "install_argo_cd" {
   provisioner "local-exec" {
     command = <<EOT

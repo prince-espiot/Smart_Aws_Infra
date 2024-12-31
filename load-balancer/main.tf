@@ -61,11 +61,7 @@ resource "helm_release" "aws_lbc" {
   #depends_on = [helm_release.cluster_autoscaler]
 }
 
-output "dns_name" {
-  description = "The DNS name of the AWS Load Balancer"
-  value       = helm_release.aws_lbc.outputs["service.beta.kubernetes.io/aws-load-balancer-dns-name"]
-  
-}
+
 
 
 
