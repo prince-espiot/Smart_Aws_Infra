@@ -29,9 +29,10 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
   role = aws_iam_role.ec2_role.name
 }*/
 
-resource "aws_instance" "ec2" {
+resource "aws_spot_instance_request" "ec2" {
   ami           = var.ami_id
   instance_type = var.instance_type
+  spot_price = "0.01"
   tags = {
     Name = var.tag_name
   }

@@ -130,6 +130,9 @@ Retrieving the initial single sign-on password for the ArgoCD UI:
 ```sh
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
+
+## Note
+**Note:** This step is required only if you enable the observability module in `main.tf`.  
 1. **Access ArgoCD**
   - Access the ArgoCD UI using the Load Balancer URL and the initial password.
 
@@ -168,6 +171,44 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 3. **Install Application**
   - Install applications on the Kubernetes cluster using Helm charts and the Helm CLI.
 
+
+### Alternative Setup Using Helm
+
+If you prefer a simpler setup, you can use the community stack to streamline the process.
+
+#### Pre-requisite: Install Helm
+
+#### Step 1: Add Helm Repositories
+Add the following Helm repositories:
+```sh
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add stable https://charts.helm.sh/stable
+```
+
+#### Step 2: Update Helm Repositories
+Update the Helm repositories:
+```sh
+helm repo update
+```
+
+#### Step 3: Install Prometheus Kubernetes
+Install the Prometheus Kubernetes stack:
+```sh
+helm install prometheus prometheus-community/kube-prometheus-stack
+```
+
+#### Step 4: Port Forward Prometheus Grafana
+Set up port forwarding to access Grafana:
+```sh
+kubectl port-forward deployment/prometheus-grafana 3000
+```
+
+#### Step 5: Log in to Grafana
+Open your browser and navigate to `http://localhost:3000`. Use the default credentials to log in:
+- **Username:** admin
+- **Password:** prom-operator
+
+You can create new users and update passwords after logging in.
 ### Clean-Up
 1. **Destroy Infrastructure**
   - Run the following command to destroy the provisioned infrastructure:

@@ -38,7 +38,7 @@ resource "aws_eks_node_group" "eks_nodes" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.eks_node_group_role.arn  
-
+  capacity_type = "SPOT"
   subnet_ids = var.subnet_ids
 
   scaling_config {
