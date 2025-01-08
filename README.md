@@ -194,7 +194,7 @@ helm repo update
 #### Step 3: Install Prometheus Kubernetes
 Install the Prometheus Kubernetes stack:
 ```sh
-helm install prometheus prometheus-community/kube-prometheus-stack
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
 ```
 
 #### Step 4: Port Forward Prometheus Grafana
