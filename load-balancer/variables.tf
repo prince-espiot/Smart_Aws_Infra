@@ -20,3 +20,21 @@ variable "cluster_region" {
   
 }
 
+variable "enable_resource_tagging_nginx" {
+  description = "Enable resource tagging"
+  type        = bool
+  default     = false  
+}
+
+variable "enable_resource_tagging_cert_manager" {
+  description = "Enable resource tagging"
+  type        = bool
+  default     = false  
+  
+}
+variable "enable_resource_tagging_alb" {
+  description = "Enable resource tagging"
+  type        = bool
+  default     = false  
+  
+}

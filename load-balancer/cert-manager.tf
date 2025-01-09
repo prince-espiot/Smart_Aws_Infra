@@ -1,4 +1,5 @@
 resource "helm_release" "cert_manager" {
+  count = var.enable_resource_tagging_cert_manager ? 1 : 0
   name = "cert-manager"
 
   repository       = "https://charts.jetstack.io"
@@ -13,4 +14,4 @@ resource "helm_release" "cert_manager" {
   }
 
   depends_on = [helm_release.external_nginx]
-}
+} 

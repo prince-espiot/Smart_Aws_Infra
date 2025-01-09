@@ -131,3 +131,4 @@ Once the PromethuesRule is created then check the newly created alerts on Promet
 ![alt text](image-7.png)
 That’s it we have successfully added our new custom alerts on alertmanager.
 
+helm uninstall kube-prometheus-stack

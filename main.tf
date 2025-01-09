@@ -52,15 +52,17 @@ module "aws_lbc" {
   cluster_region = "eu-north-1"
   vpc_id            = module.networking.vpc_id
   policy_file_path  = "./iam/AWSLoadBalancerController.json"
-
+  enable_resource_tagging_alb = true
+  enable_resource_tagging_nginx = false
+  enable_resource_tagging_cert_manager = false
 }
-/*module "Devops_tools" {
+module "Devops_tools" {
   source = "./observability_n_gitops"
   eks_cluster_name = module.eks.cluster_name
 
 }
 
-module "db_module" {
+/*module "db_module" {
   source              = "./db-mod"
   name                = "smart-db"
   vpc_id              = module.networking.vpc_id
