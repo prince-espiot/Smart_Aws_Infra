@@ -8,10 +8,10 @@ module "networking" {
 }
 
 module "security_group" {
-  source                     = "./security-groups"
-  ec2_sg_name                = "SG for EC2 to enable SSH(22) and HTTP(80)"
-  vpc_id                     = module.networking.vpc_id #check if you need to add id
-  public_subnet_cidr_block   = tolist(module.networking.public_subnet_cidr_block)
+  source                   = "./security-groups"
+  ec2_sg_name              = "SG for EC2 to enable SSH(22) and HTTP(80)"
+  vpc_id                   = module.networking.vpc_id #check if you need to add id
+  public_subnet_cidr_block = tolist(module.networking.public_subnet_cidr_block)
 }
 
 module "ec2" {
@@ -27,58 +27,59 @@ module "ec2" {
 
 
 module "s3_backend" {
-  source = "./s3" 
-  name   = var.s3_name  #name must be unique and small letters
+  source = "./s3"
+  name   = var.s3_name #name must be unique and small letters
 }
 
 module "eks" {
-  source             = "./eks"
-  cluster_name       = var.eks_cluster_name
-  node_group_name    = var.node_group_name
-  node_instance_type = var.node_instance_type # use the instance type that suits your needs
-  desired_capacity   = 2
-  min_size           = 1
-  max_size           = 2
-  vpc_id             = module.networking.vpc_id
-  subnet_ids         =module.networking.public_subnets
+  source               = "./eks"
+  cluster_name         = var.eks_cluster_name
+  node_group_name      = var.node_group_name
+  node_instance_type   = var.node_instance_type # use the instance type that suits your needs
+  desired_capacity     = 2
+  min_size             = 1
+  max_size             = 2
+  vpc_id               = module.networking.vpc_id
+  subnet_ids           = module.networking.public_subnets
   private_subnet_cidrs = module.networking.private_subnet_cidr_block
-  public_subnet_cidrs = module.networking.public_subnet_cidr_block
+  public_subnet_cidrs  = module.networking.public_subnet_cidr_block
 }
 
 # Only implement this four module if you have applied the previous modules.
 module "aws_lbc" {
-  source            = "./load-balancer"
-  eks_cluster_name  = module.eks.cluster_name
-  cluster_region = "eu-north-1"
-  vpc_id            = module.networking.vpc_id
-  policy_file_path  = "./iam/AWSLoadBalancerController.json"
-  enable_resource_tagging_alb = true
-  enable_resource_tagging_nginx = false
+  source                               = "./load-balancer"
+  eks_cluster_name                     = module.eks.cluster_name
+  cluster_region                       = "eu-north-1"
+  vpc_id                               = module.networking.vpc_id
+  policy_file_path                     = "./iam/AWSLoadBalancerController.json"
+  enable_resource_tagging_alb          = true  #enable this if you want to alb to be set in the cluster as load balancer
+  enable_resource_tagging_nginx        = false #enable this if you want to nginx to be set in the cluster as load balancer
   enable_resource_tagging_cert_manager = false
 }
 module "Devops_tools" {
-  source = "./observability_n_gitops"
+  source           = "./observability_n_gitops"
   eks_cluster_name = module.eks.cluster_name
 
 }
-
-/*module "db_module" {
-  source              = "./db-mod"
-  name                = "smart-db"
-  vpc_id              = module.networking.vpc_id
+/*
+module "db_module" {
+  source               = "./db-mod"
+  name                 = "smart-db"
+  vpc_id               = module.networking.vpc_id
   private_subnet_cidrs = module.networking.private_subnets
   public_subnet_cidrs  = module.networking.public_subnets
 }
 
 
 module "acm" {
-  source = "./acm_certificate_manager"
-  domain_name = var.domain_name
+  source         = "./acm_certificate_manager"
+  domain_name    = var.domain_name
   hosted_zone_id = var.domain_name
 }
 
 module "route53" {
-  source = "./route53"
-  domain_name = var.domain_name
-  aws_lb_dns_name = var.aws_lb_dns_name   #DNS name of the load balancer manually add this from kubctl get ingress
-}*/
+  source          = "./route53"
+  domain_name     = var.domain_name
+  aws_lb_dns_name = var.aws_lb_dns_name #DNS name of the load balancer manually add this from kubctl get ingress
+}
+*/

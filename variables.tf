@@ -40,7 +40,7 @@ variable "eu_availability_zone" {
 }
 
 variable "domain_name" {
-  type = string
+  type        = string
   description = "Name of the domain"
 }
 
@@ -50,51 +50,51 @@ variable "ec2_ami_id" {
 }
 
 variable "ec2_user_data_install_apache" {
-  type = string
+  type        = string
   description = "Script for installing the Apache2"
 }
 
 
 variable "node_group_name" {
-  type = string
-  default = "eks-node-group"
+  type        = string
+  default     = "eks-node-group"
   description = "node group name"
 }
 
 variable "eks_cluster_name" {
-  type = string
-  default = "eks_cluster_name"
-  description = "eks cluster name"  
-  
+  type        = string
+  default     = "eks_cluster_name"
+  description = "eks cluster name"
+
 }
 
 variable "node_instance_type" {
-  type = string
-  default = "t3.medium"
+  type        = string
+  default     = "t3.medium"
   description = "node instance type"
 }
 
 variable "ec2_instance_type" {
-  type = string
-  default = "t3.micro"
+  type        = string
+  default     = "t3.micro"
   description = "ec2 instance type"
 }
 
 variable "s3_name" {
-  type = string
-  default = "s3_name"
-  description = "smartbi" 
-  
+  type        = string
+  default     = "s3_name"
+  description = "smartbi"
+
 }
 
 variable "region" {
-  type = string
+  type        = string
   description = "aws region"
 }
 
 
 variable "aws_lb_dns_name" {
-  type = string
+  type        = string
   description = "DNS name of the load balancer"
-  
+
 }
