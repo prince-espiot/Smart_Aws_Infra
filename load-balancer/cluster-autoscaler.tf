@@ -84,7 +84,7 @@ resource "helm_release" "cluster_autoscaler" {
 
   # MUST be updated to match your region 
   set {
-    name  = "eu-north-1"  #add value for this
+    name  = "awsRegion"  #add value for this
     value = var.cluster_region
   }
 

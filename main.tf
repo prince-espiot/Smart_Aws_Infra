@@ -38,7 +38,7 @@ module "eks" {
   node_instance_type   = var.node_instance_type # use the instance type that suits your needs
   desired_capacity     = 2
   min_size             = 1
-  max_size             = 2
+  max_size             = 3
   vpc_id               = module.networking.vpc_id
   subnet_ids           = module.networking.public_subnets
   private_subnet_cidrs = module.networking.private_subnet_cidr_block
