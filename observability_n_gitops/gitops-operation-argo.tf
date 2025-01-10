@@ -1,4 +1,5 @@
 resource "helm_release" "argo_cd" {
+  count = var.enable_argo_cd == true ? 1 : 0
   name       = "argo-cd"
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
