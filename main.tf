@@ -57,9 +57,9 @@ module "aws_lbc" {
   enable_resource_tagging_cert_manager = false #enable this if you want to cert-manager to be set in the cluster as load balancer
 }
 module "Devops_tools" {
-  source           = "./observability_n_gitops"
-  eks_cluster_name = module.eks.cluster_name
-  enable_argo_cd   = true #enable this if you want to install argo cd
+  source                       = "./observability_n_gitops"
+  eks_cluster_name             = module.eks.cluster_name
+  enable_argo_cd               = true #enable this if you want to install argo cd
   enable_argo_cd_image_updater = true #enable this if you want to install argo cd image updater
 
 }
