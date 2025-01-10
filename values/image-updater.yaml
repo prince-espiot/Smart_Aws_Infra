@@ -6,3 +6,13 @@ image:
 metrics:
   enabled: true
 
+
+# unCOMMENT this so image-updater will be enabled to pull from docker hub private registry  
+# config:
+#   registries:
+#     - name: Docker Hub
+#       api_url: https://registry-1.docker.io
+#       ping: true
+#       credentials: secret:argocd/dockerhub#my-token
+#       limit: 10
+#       default: true
