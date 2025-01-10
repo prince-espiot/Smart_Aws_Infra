@@ -1,3 +1,4 @@
+#You can use the following values to configure the Image Updater, find the latest tag here https://github.com/argoproj-labs/argocd-image-updater/releases
 ---
 image:
   tag: "v0.15.2"

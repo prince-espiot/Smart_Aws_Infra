@@ -1,7 +1,9 @@
+#you can find the later tag here https://quay.io/repository/argoproj/argocd?tab=tags
+
 ---
 global:
   image:
-    tag: "v0.0.19"
+    tag: "v2.13.3"
 
 server:
   extraArgs:

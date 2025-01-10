@@ -11,4 +11,6 @@ resource "helm_release" "updater" {
   version          = "0.11.4"
 
   values = [file("${path.module}/../values/image-updater.yaml")]
+
+  depends_on = [ helm_release.argo_cd ]
 }
