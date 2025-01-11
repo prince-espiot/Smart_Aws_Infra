@@ -170,8 +170,9 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 3. **Install Application**
   - Install applications on the Kubernetes cluster using Helm charts and the Helm CLI.
-
-
+  ```
+kubectl patch applications.argoproj.io myapp-2 -n argocd --type=json -p='[{"op": "remove", "path": "/metadata/finalizers"}]'
+```
 ### Alternative Setup Using Helm
 
 If you prefer a simpler setup, you can use the community stack to streamline the process.

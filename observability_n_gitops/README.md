@@ -34,15 +34,15 @@ This command will deploy Prometheus, Alertmanager, and Grafana to your cluster w
 Step 2: Verifying the Setup
 To verify that Prometheus and Alertmanager are running correctly, you can access their web UIs. Since we exposed their services as NodePort, you can use kubectl port-forward to access them locally or you can use external IP of the cluster and nodeport of the respective service.
 For Prometheus:
-![alt text](image-2.png)
+![alt text](images/image-2.png)
 
 Prometheus UI
 For Alertmanager:
-![alt text](image-3.png)
+![alt text](images/image-3.png)
 
 AlertManager UI
 For Grafana:
-![alt text](image-4.png)
+![alt text](images/image-4.png)
 ```yaml
 username: admin     
 Password: prom-operator
@@ -52,11 +52,11 @@ Grafana Dashboard
 Access the default Alertmanager rules:
 
 To access the alertmanager rules/alerts, navigate to Alerts section on prometheus UI:
-![alt text](image-5.png)
+![alt text](images/image-5.png)
 
 Alerts in Prometheus UI
 Here we can see that three alerts are in Firing state, so these alerts we can see in AlertManager UI to manage:
-![alt text](image-6.png)
+![alt text](images/image-6.png)
 
 Step 3: Configuring Custom Alert Rules
 From the above steps we can see that the default alerts are configured in prometheus and alertmanager. Now, let’s add custom alert rules to monitor our Kubernetes cluster. We’ll create a PrometheusRule manifest to define these alerts.
@@ -128,7 +128,7 @@ Apply the manifest to your Kubernetes cluster:
 
 kubectl apply -f custom-alert-rules.yaml
 Once the PromethuesRule is created then check the newly created alerts on Prometheus UI.
-![alt text](image-7.png)
+![alt text](images/image-7.png)
 That’s it we have successfully added our new custom alerts on alertmanager.
 
 helm uninstall kube-prometheus-stack
