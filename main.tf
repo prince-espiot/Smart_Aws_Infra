@@ -41,6 +41,7 @@ module "eks" {
 }
 
 # Only implement the next modules if you have applied the previous modules.
+/*
 module "aws_lbc" {
   source                               = "./load-balancer"
   eks_cluster_name                     = module.eks.cluster_name
@@ -52,7 +53,7 @@ module "aws_lbc" {
   enable_resource_tagging_cert_manager = false #enable this if you want to cert-manager to be set in the cluster as load balancer
 }
 
-/*
+
 module "GitOps_tools" {
   source                       = "./gitops"
   eks_cluster_name             = module.eks.cluster_name
