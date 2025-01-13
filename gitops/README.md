@@ -1,6 +1,6 @@
 # ⎈ A Hands-On Guide: Setting Up Prometheus and AlertManager in Kubernetes with Custom Alerts 🛠️
 
-![Prometheus Logo](image.png)
+![Prometheus Logo](images/image.png)
 
 Monitoring your Kubernetes cluster is crucial for maintaining the health and performance of your applications. This guide walks you through setting up Prometheus and Alertmanager using Helm and configuring custom alert rules to monitor your cluster effectively.
 

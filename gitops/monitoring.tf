@@ -40,9 +40,4 @@ resource "kubernetes_namespace" "monitoring" {
     name = "monitoring"
   }
 }
-
-# Define dependency for the namespace
-resource "null_resource" "namespace_monitoring" {
-  depends_on = [kubernetes_namespace.monitoring]
-}
  */
