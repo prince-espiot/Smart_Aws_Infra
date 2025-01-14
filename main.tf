@@ -41,6 +41,20 @@ module "eks" {
   public_subnet_cidrs  = module.networking.public_subnet_cidr_block
 }
 
+module "GitOps_tools" {
+  source                       = "./gitops"
+  eks_cluster_name             = module.eks.cluster_name
+  enable_argo_cd               = true #enable this if you want to install argo cd
+  enable_argo_cd_image_updater = true #enable this if you want to install argo cd image updater
+
+}
+
+module "ecr" {
+  source     = "./ecr"
+  name       = var.ecr_repo_name
+  enable_ecr = true
+}
+
 # Only implement the next modules if you have applied the previous modules.
 /*
 module "aws_lbc" {
@@ -54,14 +68,6 @@ module "aws_lbc" {
   enable_resource_tagging_cert_manager = false #enable this if you want to cert-manager to be set in the cluster as load balancer
 }
 
-
-module "GitOps_tools" {
-  source                       = "./gitops"
-  eks_cluster_name             = module.eks.cluster_name
-  enable_argo_cd               = true #enable this if you want to install argo cd
-  enable_argo_cd_image_updater = true #enable this if you want to install argo cd image updater
-
-}
 
 module "s3_backend" {
   source = "./s3"

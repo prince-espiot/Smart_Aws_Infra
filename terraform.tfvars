@@ -16,3 +16,4 @@ ec2_instance_type            = "t3.micro"
 s3_name                      = "smartbi"
 node_group_name              = "eks-node-group"
 aws_lb_dns_name              = "k8s-myweb-myapp-1ca6673ad2-2085793274.eu-north-1.elb.amazonaws.com" #DNS name of the load balancer
+ecr_repo_name                = "myapp"

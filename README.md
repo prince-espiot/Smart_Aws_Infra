@@ -233,7 +233,13 @@ You can create new users and update passwords after logging in.
       -o jsonpath="{.data.password}" | base64 -d; echo
 
 
-### important Commands
+## Important Commands
+- To get the pod identity eks agent 
 ```
 aws eks describe-addon-versions --region eu-north-1 --addon-name eks-pod-identity-agent 
+```
+- reconcile cluster context 
+```
+aws eks update-kubeconfig --name <Cluster name>  --region <cluster region>
+
 ```

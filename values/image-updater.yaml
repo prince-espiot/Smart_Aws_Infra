@@ -6,6 +6,9 @@ image:
 metrics:
   enabled: true
 
+serviceAccount:
+  create: true
+  name: argocd-image-updater # Used to establish RBAC for the image-updater
 
 # unCOMMENT this so image-updater will be enabled to pull from docker hub private registry  
 # config:
@@ -16,3 +19,4 @@ metrics:
 #       credentials: secret:argocd/dockerhub#my-token
 #       limit: 10
 #       default: true
+

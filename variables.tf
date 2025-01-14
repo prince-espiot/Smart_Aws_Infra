@@ -98,3 +98,9 @@ variable "aws_lb_dns_name" {
   description = "DNS name of the load balancer"
 
 }
+
+variable "ecr_repo_name" {
+  type        = string
+  description = "The name of the service"
+
+}

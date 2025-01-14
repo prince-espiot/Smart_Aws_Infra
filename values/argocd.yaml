@@ -8,3 +8,8 @@ global:
 server:
   extraArgs:
     - --insecure
+
+config:
+  params:
+    server:
+      insecure: true
