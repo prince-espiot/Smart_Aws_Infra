@@ -9,9 +9,10 @@ module "networking" {
 
 module "security_group" {
   source                   = "./security-groups"
-  ec2_sg_name              = "SG for EC2 to enable SSH(22) and HTTP(80)"
+  ec2_sg_name              = "SG for EC2 to enable SSH(22) by default"
   vpc_id                   = module.networking.vpc_id #check if you need to add id
   public_subnet_cidr_block = tolist(module.networking.public_subnet_cidr_block)
+  enable_http              = false
 }
 
 module "ec2" {
