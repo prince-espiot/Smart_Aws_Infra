@@ -1,4 +1,4 @@
-resource "aws_ecr_repository" "ecr_repo_name" {
+resource "aws_ecr_repository" "ecr_service_name" {
   count = var.enable_ecr == true ? 1 : 0
   name = var.ecr_repo_name
   image_tag_mutability = "MUTABLE"

@@ -49,10 +49,10 @@ module "GitOps_tools" {
 
 }
 
-module "ecr" {
-  source     = "./ecr"
-  name       = var.ecr_repo_name
-  enable_ecr = true
+module "ecr_repo" {
+  source        = "./ecr"
+  ecr_repo_name = var.ecr_repo_name
+  enable_ecr    = true
 }
 
 # Only implement the next modules if you have applied the previous modules.
