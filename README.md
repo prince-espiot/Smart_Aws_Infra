@@ -231,3 +231,9 @@ You can create new users and update passwords after logging in.
 6. **Delete Route53 Records**
   - Delete the Route53 records associated with the infrastructurekubectl -n argocd get secret argocd-initial-admin-secret \
       -o jsonpath="{.data.password}" | base64 -d; echo
+
+
+### important Commands
+```
+aws eks describe-addon-versions --region eu-north-1 --addon-name eks-pod-identity-agent 
+```
