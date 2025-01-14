@@ -43,4 +43,16 @@ resource "aws_security_group" "enable_ec2_sg_http" {
     protocol    = "tcp"
   }
   
+
+  #Outgoing request
+  egress {
+    description = "Allow outgoing request"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+ tags = {
+      Name = "Security Groups to allow HTTP(80)"
+    }	
 }
