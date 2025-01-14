@@ -1,14 +1,12 @@
 #You can use the following values to configure the Image Updater, find the latest tag here https://github.com/argoproj-labs/argocd-image-updater/releases
 ---
-image:
-  tag: "v0.15.2"
+# for dockerhub
+# image:
+#   tag: "v0.15.2"
 
-metrics:
-  enabled: true
+# metrics:
+#   enabled: true
 
-serviceAccount:
-  create: true
-  name: argocd-image-updater # Used to establish RBAC for the image-updater
 
 # unCOMMENT this so image-updater will be enabled to pull from docker hub private registry  
 # config:
@@ -19,4 +17,27 @@ serviceAccount:
 #       credentials: secret:argocd/dockerhub#my-token
 #       limit: 10
 #       default: true
+
+serviceAccount:
+  name: argocd-image-updater
+
+authScripts:
+  enabled: true
+  scripts:
+    auth.sh: |
+      #!/bin/sh
+      aws ecr --region eu-north-1 get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d
+  
+
+config:
+  registries:
+    - name: ECR
+      api_url: https://481665127750.dkr.ecr.eu-north-1.amazonaws.com
+      prefix: 481665127750.dkr.ecr.eu-north-1.amazonaws.com
+      ping: yes
+      insecure: no
+      credentials: ext:/scripts/auth.sh
+      credsexpire: 10h 
+
+      
 

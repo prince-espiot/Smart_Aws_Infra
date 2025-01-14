@@ -32,7 +32,7 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
 resource "aws_spot_instance_request" "ec2" {
   ami           = var.ami_id
   instance_type = var.instance_type
-  spot_price = "0.01"
+  # spot_price = "0.01"
   tags = {
     Name = var.tag_name
   }

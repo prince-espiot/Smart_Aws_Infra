@@ -46,9 +46,10 @@ resource "helm_release" "updater" {
   chart            = "argocd-image-updater"
   namespace        = "argocd"
   create_namespace = false
-  version          = "0.11.4"
+  version          = "0.11.0"
 
   values = [file("${path.module}/../values/image-updater.yaml")]
 
   depends_on = [ helm_release.argo_cd ]
 }
+
