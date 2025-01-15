@@ -55,7 +55,7 @@ module "ecr_repo" {
 }
 
 # Only implement the next modules if you have applied the previous modules.
-
+/*
 module "aws_lbc" {
   source                               = "./load-balancer"
   eks_cluster_name                     = module.eks.cluster_name
@@ -96,3 +96,4 @@ module "route53" {
   domain_name     = var.domain_name
   aws_lb_dns_name = var.aws_lb_dns_name #DNS name of the load balancer manually add this from kubctl get ingress
 }
+*/
