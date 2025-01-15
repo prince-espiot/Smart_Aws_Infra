@@ -38,6 +38,3 @@ config:
       insecure: no
       credentials: ext:/scripts/auth.sh
       credsexpire: 10h 
-
-      
-

@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "argocd_image_updater" {
 
     actions = [
       "sts:AssumeRole",
-      "sts:TagSession"
+      "sts:TagSession",
     ]
   
 }
@@ -27,7 +27,6 @@ resource "aws_iam_role" "argocd_image_updater" {
 resource "aws_iam_role_policy_attachment" "argocd_image_updater" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.argocd_image_updater.name
-  
 }
 
 resource "aws_eks_pod_identity_association" "argocd_image_updater" {
