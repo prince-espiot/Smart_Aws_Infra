@@ -1,3 +1,7 @@
+module "s3_backend" {
+  source = "./s3"
+  name   = var.s3_name #name must be unique and small letters
+}
 module "networking" {
   source               = "./networking"
   vpc_cidr             = var.vpc_cidr
@@ -45,12 +49,13 @@ module "eks" {
 
 module "ecr_repo" {
   source        = "./ecr"
-  ecr_repo_name = var.ecr_repo_name
   enable_ecr    = true
+  ecr_repo_name = var.ecr_repo_name
+  
 }
 
 # Only implement the next modules if you have applied the previous modules.
-/*
+
 module "aws_lbc" {
   source                               = "./load-balancer"
   eks_cluster_name                     = module.eks.cluster_name
@@ -69,13 +74,11 @@ module "GitOps_tools" {
   enable_argo_cd_image_updater = true #enable this if you want to install argo cd image updater
 
 }
-module "s3_backend" {
-  source = "./s3"
-  name   = var.s3_name #name must be unique and small letters
-}
+
 
 module "db_module" {
   source               = "./db-mod"
+  enable_dynamodb_lock = false
   name                 = "smart-db"
   vpc_id               = module.networking.vpc_id
   private_subnet_cidrs = module.networking.private_subnets
@@ -93,4 +96,3 @@ module "route53" {
   domain_name     = var.domain_name
   aws_lb_dns_name = var.aws_lb_dns_name #DNS name of the load balancer manually add this from kubctl get ingress
 }
-*/

@@ -1,9 +1,3 @@
-/*variable "bucket_name" {
-  type        = string
-  description = "Remote state bucket name"
-}
-*/
-
 variable "name" {
   type        = string
   description = "Tag name"
@@ -82,7 +76,7 @@ variable "ec2_instance_type" {
 
 variable "s3_name" {
   type        = string
-  default     = "s3_name"
+  default     = "smartbi-tf-backend-z3zu58asipvf7dtosxgeqm8cfgmt8udx"
   description = "smartbi"
 
 }

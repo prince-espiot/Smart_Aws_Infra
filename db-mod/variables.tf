@@ -31,3 +31,8 @@ variable "vpc_id" {
   description = "ID of the VPC"
   type        = string
 }
+
+variable "enable_dynamodb_lock" {
+  type = string
+  description = "This is to enable to state locking of terraform state files."
+}

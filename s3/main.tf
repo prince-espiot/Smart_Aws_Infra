@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "shared_backend_bucket" {
-  bucket = "${var.name}-tf-backend-z3zu58asipvf7dtosxgeqm8cfgmt8udx"
+  bucket = var.name
 
   tags = {
     Name        = "tf-bucket"
