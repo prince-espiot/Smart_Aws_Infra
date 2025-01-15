@@ -51,7 +51,7 @@ module "ecr_repo" {
   source        = "./ecr"
   enable_ecr    = true
   ecr_repo_name = var.ecr_repo_name
-  
+
 }
 
 # Only implement the next modules if you have applied the previous modules.
