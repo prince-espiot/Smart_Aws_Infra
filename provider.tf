@@ -1,8 +1,9 @@
 terraform {
   /*backend "s3" {
-    bucket = var.s3_name
-    key = "terrform.tfstate"
-    region = var.region
+    bucket         = var.s3_name
+    key            = "prince/s3/terrform.tfstate"
+    region         = var.region
+    dynamodb_table = "terraform-locks"
   }*/
   required_providers {
     aws = {
