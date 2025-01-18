@@ -1,0 +1,8 @@
+resources:
+  - Deployment.yaml
+  - Service.yaml
+  - ingress.yaml
+  - namespace.yaml
+  - cluster-issuer.yaml
+  - Serviceaccount.yaml
+  - secret.yaml

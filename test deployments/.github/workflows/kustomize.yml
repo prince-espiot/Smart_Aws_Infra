@@ -1,0 +1,69 @@
+name: Kustomize Build CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  kustomize-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Kind
+        uses: helm/kind-action@v1.5.0
+
+      # Step 2: Cache Kustomize Binary
+      - name: Cache Kustomize Binary
+        uses: actions/cache@v3
+        with:
+          path: /usr/local/bin/kustomize
+          key: ${{ runner.os }}-kustomize-v4.6.1
+          restore-keys: |
+            ${{ runner.os }}-kustomize
+
+      # Step 3: Install Kustomize if not cached
+      - name: Install Kustomize
+        run: |
+          if [ ! -f /usr/local/bin/kustomize ]; then
+            curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+            sudo mv ./kustomize /usr/local/bin/
+          fi
+
+      # Step 4: Build and Validate Kustomize Output
+      - name: Build and Validate Kustomize Output
+        run: |
+          kustomize build ./Test-infra/Staging/test > output.yaml
+          kubectl apply --dry-run=client --validate=false -f output.yaml
+
+      # Step 5: Checkout the repository
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        
+      # Step 6: Configure Git
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      # Step 7: Ensure Deploy branch exists and push
+      - name: Ensure Deploy branh exists and push
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/Deploy; then
+            git checkout Deploy
+            git pull origin Deploy --rebase
+          else
+            git checkout -b Deploy
+          fi
+          git push https://x-access-token:${PAT_TOKEN}@github.com/prince-espiot/Test_deployment.git Deploy
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+        
+        
+
+

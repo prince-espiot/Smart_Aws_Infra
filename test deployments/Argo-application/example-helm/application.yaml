@@ -1,0 +1,44 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-2
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: okumop/myweb:~v0.1
+    argocd-image-updater.argoproj.io/write-back-method: git
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: ssh://git@github.com/prince-espiot/private_test_deployment.git
+    targetRevision: main
+    path: myapp-chart
+    helm:
+      parameters:
+        - name: "replicaCount"
+          value: "2"
+        - name: "image.repository"
+          value: okumop/myweb
+        - name: "image.tag"
+          value: v0.0.14
+        - name: "service.port"
+          value: "8080"
+        - name: "livenessProbe.httpGet.port"
+          value: "8080"
+        - name: "readinessProbe.httpGet.port"
+          value: "8080"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true # delete resources that are not in the git repo
+      selfHeal: true # recreate resources that are not in the git repo
+      allowEmpty: false # do not allow empty repo
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true

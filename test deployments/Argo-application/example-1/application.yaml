@@ -1,0 +1,28 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-2
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: okumop/myweb:~v0.1
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: ssh://git@github.com:prince-espiot/private_test_deployment.git
+    targetRevision: main
+    path: environments/staging/myapp
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true # delete resources that are not in the git repo
+      selfHeal: true # recreate resources that are not in the git repo
+      allowEmpty: false # do not allow empty repo
+    syncOptions:
+      - Validate=true # validate the resources
+      - CreateNamespace=false # do not create the namespace
+      - PrunePropagationPolicy=foreground # prune the resources in the foreground
+      - PruneLast=true # prune the last resources

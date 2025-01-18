@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myweb-2
+  namespace: argocd
+spec:
+  project: nginx
+  source:
+    repoURL: https://github.com/prince-espiot/Test_deployment.git
+    targetRevision: HEAD
+    path: Test-infra/Staging/nginx-test
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: myweb-2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

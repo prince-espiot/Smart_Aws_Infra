@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nginx
+  namespace: argocd
+spec:
+  sourceRepos:
+    - '*'  # Allow all repositories, or restrict to specific ones
+  destinations:
+    - namespace: '*'
+      server: '*'  # Allow all clusters and namespaces, or restrict as needed
+  clusterResourceWhitelist:
+    - group: "cert-manager.io"
+      kind: "ClusterIssuer"
+    - group: ""
+      kind: "Namespace"
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
