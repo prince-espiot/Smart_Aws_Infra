@@ -259,6 +259,4 @@ resource "aws_eks_addon" "ebs" {
   service_account_role_arn = aws_iam_role.eks_addon_role.arn
   depends_on               = [aws_eks_cluster.eks_cluster]
 }
-
-
 */
