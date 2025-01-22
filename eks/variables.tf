@@ -16,3 +16,6 @@ variable "public_subnet_cidrs" {}
 variable "region" {
   default = "eu-north-1"    
 }
+variable "enable_karpenter" {
+  default = false
+}

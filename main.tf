@@ -43,6 +43,7 @@ module "eks" {
   subnet_ids           = module.networking.public_subnets
   private_subnet_cidrs = module.networking.private_subnet_cidr_block
   public_subnet_cidrs  = module.networking.public_subnet_cidr_block
+  enable_karpenter     = false
 }
 
 

@@ -3,7 +3,6 @@
 ## Description 
 The Smart_Aws_Infra project offers a robust and integrated solution for deploying, monitoring, and managing Kubernetes clusters using GitOps principles. This infrastructure setup comes pre-configured with essential tools for seamless deployment, comprehensive monitoring, and efficient GitOps workflows. By leveraging AWS services and popular open-source tools, Smart_Aws_Infra ensures a scalable, reliable, and automated environment for your Kubernetes applications.
 
-
 <div align="center">
 
 ## AWS Services and Tools
@@ -19,13 +18,10 @@ The Smart_Aws_Infra project offers a robust and integrated solution for deployin
 | ALB          |                |
 </div>
 
-
 ## Architecture
 <p align="center">
-  <div align="center">
-    <img src="smartinfra.gif" alt="Architecture Diagram" >
-    <p><strong>Figure 1:</strong> Architecture Diagram of Smart AWS Infrastructure</p>
-  </div>
+  <img src="smartinfra.gif" alt="Architecture Diagram" >
+  <p><strong>Figure 1:</strong> Architecture Diagram of Smart AWS Infrastructure</p>
 </p>
 
 ## Steps
@@ -71,16 +67,13 @@ The infrastructure is divided into ten modules within the `./main.tf` file. To e
     aws eks update-kubeconfig --name <name-of-cluster> --region <region>
     ```
 
- 
- 
- ## Note 
+## Note 
 **Note:** The PersistentVolume (PV) does not automatically attach to the StorageClass. You need to manually edit the PV and set the default StorageClass to `gp2`. To patch the StorageClass, run the following command:
 ```sh
 kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
-
- ## Manual step
+## Manual Steps
 
 ### Generating SSH Keys
 1. **Generate SSH Key Pair**
@@ -112,8 +105,8 @@ kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.ku
     ```sh
     ssh -T git@github.com
     ```
-  
-### ArgoCD setup
+
+### ArgoCD Setup
 1. **Create ArgoCD Namespace**
   - Run the following command to create the `argocd` namespace (if it doesn't already exist):
     ```sh
@@ -125,11 +118,10 @@ kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.ku
     ```sh
     kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
     ```
-  - You should see a success message indicating that you have successfully authenticated.
-Retrieving the initial single sign-on password for the ArgoCD UI: 
-```sh
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
-```
+  - Retrieve the initial single sign-on password for the ArgoCD UI:
+    ```sh
+    kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+    ```
 
 ## Note
 **Note:** This step is required only if you enable the observability module in `main.tf`.  
@@ -170,9 +162,10 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 3. **Install Application**
   - Install applications on the Kubernetes cluster using Helm charts and the Helm CLI.
-  ```
-kubectl patch applications.argoproj.io myapp-2 -n argocd --type=json -p='[{"op": "remove", "path": "/metadata/finalizers"}]'
-```
+    ```sh
+    kubectl patch applications.argoproj.io myapp-2 -n argocd --type=json -p='[{"op": "remove", "path": "/metadata/finalizers"}]'
+    ```
+
 ### Alternative Setup Using Helm
 
 If you prefer a simpler setup, you can use the community stack to streamline the process.
@@ -210,12 +203,14 @@ Open your browser and navigate to `http://localhost:3000`. Use the default crede
 - **Password:** prom-operator
 
 You can create new users and update passwords after logging in.
+
 ### Clean-Up
 1. **Destroy Infrastructure**
   - Run the following command to destroy the provisioned infrastructure:
     ```sh
     terraform destroy -auto-approve
     ```
+
 2. **Delete EKS Cluster**
   - Delete the EKS cluster using the AWS Management Console or the AWS CLI.
 
@@ -229,17 +224,15 @@ You can create new users and update passwords after logging in.
   - Uninstall the Helm releases to remove the deployed applications from the cluster.
 
 6. **Delete Route53 Records**
-  - Delete the Route53 records associated with the infrastructurekubectl -n argocd get secret argocd-initial-admin-secret \
-      -o jsonpath="{.data.password}" | base64 -d; echo
-
+  - Delete the Route53 records associated with the infrastructure.
 
 ## Important Commands
-- To get the pod identity eks agent 
-```
-aws eks describe-addon-versions --region eu-north-1 --addon-name eks-pod-identity-agent 
-```
-- reconcile cluster context 
-```
-aws eks update-kubeconfig --name <Cluster name>  --region <cluster region>
+- To get the pod identity eks agent:
+  ```sh
+  aws eks describe-addon-versions --region eu-north-1 --addon-name eks-pod-identity-agent 
+  ```
 
-```
+- Reconcile cluster context:
+  ```sh
+  aws eks update-kubeconfig --name <Cluster name> --region <cluster region>
+  ```
